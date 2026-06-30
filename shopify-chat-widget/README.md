@@ -1,7 +1,7 @@
-# Shopify AI Chat Widget
+# Custom Chat Widget
 
 A reusable Shopify chatbot widget built using Liquid, HTML, CSS, and JavaScript.
-
+Note: you can add any shopify extentions for chatbot ui
 ## Installation
 
 1. Copy `chatbot-widget.liquid` to your theme's `snippets` folder.
