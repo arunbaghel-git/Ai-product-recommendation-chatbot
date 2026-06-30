@@ -1,9 +1,10 @@
-# AI Shopify Product Recommendation Chatbot
+# AI Product Recommendation Chatbot
 
-An AI-powered product recommendation chatbot for Shopify built using **n8n**, **OpenAI**, **Gadget**, and a custom **Shopify chat widget**.
+An AI-powered product recommendation chatbot for Shopify built using **n8n**, **OpenAI**, **Gadget**, and a custom **chat widget**.
 
-The system synchronizes Shopify product data, indexes it into an in-memory vector store, and uses Retrieval-Augmented Generation (RAG) to provide context-aware product recommendations. Customer leads and conversations are stored in Gadget and can be viewed through the Gadget application.
+The system synchronizes product data, indexes it into an in-memory vector store, and uses Retrieval-Augmented Generation (RAG) to provide context-aware product recommendations. Customer leads and conversations are stored in Gadget and can be viewed through the Gadget application.
 
+# note: It can be embedded in any website Shopify, WordPress, React apps, or plain HTML pages. i used it for shopify store
 ---
 
 ## Features
@@ -11,11 +12,11 @@ The system synchronizes Shopify product data, indexes it into an in-memory vecto
 - AI-powered product recommendations
 - Retrieval-Augmented Generation (RAG)
 - Semantic vector search
-- Shopify product synchronization
+- product synchronization
 - Customer lead capture
 - Conversation history logging
 - Multilingual support (English, Hindi, Hinglish)
-- Custom Shopify chat widget
+- Custom chat widget
 - Modular architecture
 
 ---
@@ -24,7 +25,7 @@ The system synchronizes Shopify product data, indexes it into an in-memory vecto
 
 | Component | Technology |
 |-----------|------------|
-| Storefront | Shopify |
+| Storefront | Shopify or Any Other|
 | AI Workflow | n8n |
 | AI Models | OpenAI |
 | Backend | Gadget |
@@ -37,7 +38,7 @@ The system synchronizes Shopify product data, indexes it into an in-memory vecto
 ## Repository Structure
 
 ```text
-shopify-ai-chatbot/
+AI-powered-product-recommendation-chatbot/
 │
 ├── docker/                 # Docker configuration
 ├── docs/                   # Project documentation
@@ -46,8 +47,8 @@ shopify-ai-chatbot/
 │   ├── chatbot-ai-agent.json
 │   └── README.md
 ├── screenshots/            # Project screenshots
-├── shopify-chat-widget/    # Shopify widget
-│   ├── chatbot-widget.liquid
+├── chat-widget/    # Chat widget
+│   ├── chatbot-widget.html // user any extention according to usecase
 │   └── README.md
 ├── .gitignore
 ├── .env.example
@@ -68,7 +69,7 @@ shopify-ai-chatbot/
 - Vector search
 - Chat processing
 
-### Shopify Chat Widget
+### Chat Widget
 
 - Floating chat interface
 - Lead capture
@@ -99,7 +100,7 @@ See the detailed architecture documentation:
 2. Start the Docker environment.
 3. Import the n8n workflow.
 4. Configure the required credentials.
-5. Install the Shopify chat widget.
+5. Install the chat widget.
 6. Connect your Gadget backend.
 
 Refer to the README files inside each component for detailed setup instructions.

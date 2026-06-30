@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is an AI-powered Shopify product recommendation system built using **Shopify**, **n8n**, **OpenAI**, **Gadget GraphQL**, and a custom **Shopify chat widget**.
+This project is an AI-powered Shopify product recommendation system built using **Shopify**, **n8n**, **OpenAI**, **Gadget GraphQL**, and a custom **chat widget**.
 
 The chatbot synchronizes product data from Shopify, indexes it into an in-memory vector store, and uses Retrieval-Augmented Generation (RAG) to provide context-aware product recommendations based on customer queries.
 
@@ -11,7 +11,7 @@ The chatbot synchronizes product data from Shopify, indexes it into an in-memory
 # High-Level Architecture
 
 ```text
-                           Shopify Store
+                               Store
                                  │
                                  ▼
                     Gadget App (Installed)
@@ -37,7 +37,7 @@ The chatbot synchronizes product data from Shopify, indexes it into an in-memory
                            AI Agent (RAG)
                                  │
                                  ▼
-                     Shopify Chat Widget
+                         Chat Widget
                                  │
                                  ▼
                              Customer
@@ -121,9 +121,9 @@ Indexed product fields include:
 
 ---
 
-## Shopify Chat Widget
+## Chat Widget
 
-A custom Shopify widget provides the customer interface.
+A custom widget provides the customer interface.
 
 Features include:
 
@@ -149,7 +149,7 @@ Features include:
 
 ## Customer Conversation
 
-1. Customer opens the Shopify chat widget.
+1. Customer opens the chat widget.
 2. Customer submits lead information.
 3. Lead details are saved through Gadget.
 4. Customer sends a message.
@@ -207,7 +207,7 @@ The architecture is designed around the following principles:
 * AI-powered product recommendations
 * Fast semantic product search
 * Modular architecture
-* Easy Shopify integration
+* Easy integration
 * Low-code workflow automation
 * Centralized customer lead management
 * Conversation history available from the Gadget application

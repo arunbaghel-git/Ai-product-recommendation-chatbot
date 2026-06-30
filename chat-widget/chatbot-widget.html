@@ -269,7 +269,7 @@
         function cleanProductUrl(s) {
           var str = String(s || '').trim();
       
-          // Extract clean Shopify product URL from accidental markdown format if it appears.
+          // Extract clean product URL from accidental markdown format if it appears.
           var markdownUrl = str.match(/\]\((https?:\/\/[^\s"'\)\]]+\/products\/[^\s"'\)\]]+)/i);
       
           if (markdownUrl && markdownUrl[1]) {

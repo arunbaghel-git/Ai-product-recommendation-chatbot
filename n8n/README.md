@@ -1,6 +1,6 @@
 # AI Product Recommendation Chatbot (n8n)
 
-An AI-powered Shopify product recommendation chatbot built using **n8n**, **OpenAI**, and **Gadget GraphQL**.
+An AI-powered product recommendation chatbot built using **n8n**, **OpenAI**, and **Gadget GraphQL**.
 
 The workflow synchronizes Shopify products, indexes them in an in-memory vector store, and uses Retrieval-Augmented Generation (RAG) to provide context-aware product recommendations.
 
