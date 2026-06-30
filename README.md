@@ -123,9 +123,3 @@ This repository does **not** include:
 - Environment Secrets
 
 Use your own credentials when configuring the project.
-
----
-
-## License
-
-This project is provided for learning and portfolio purposes.
