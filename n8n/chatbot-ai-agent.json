@@ -1,0 +1,552 @@
+{
+  "name": "chatbot-ai-agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        608
+      ],
+      "id": "93ce1aa8-d7c4-4e3f-a14b-c996c0dfb881",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "ud7LNQFJncui5L7S",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        704,
+        384
+      ],
+      "id": "51ed7512-5d3b-4255-8177-8e9dbd232638",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 492,
+        "width": 796,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "cc5e6844-b321-4602-b9f6-f60ad2ddbbdf",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "value": "vector_store_key",
+          "mode": "list",
+          "cachedResultName": "vector_store_key"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.2,
+      "position": [
+        464,
+        256
+      ],
+      "id": "ba31cda4-7182-4c07-8962-bc640156d80f",
+      "name": "Insert Data to Store"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "knowledge_base",
+        "toolDescription": "Use this knowledge base to answer questions from the user",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        },
+        "topK": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.2,
+      "position": [
+        1216,
+        288
+      ],
+      "id": "44a33902-7e02-46ee-9484-2dcce8a21f3e",
+      "name": "Query Data Tool"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.message }}",
+        "options": {
+          "systemMessage": "You are Aria a female, Product recommendation a helpful and polite assistant.\n\nYour only job is to suggest products using Query Data Tool.\n\nFor every valid product-related user message, call Query Data Tool before replying.\n\nYou must suggest products only from Query Data Tool results.\n\n we deals only in bracelets.\n\nIf the user includes a non-bracelet product word, remove only that product word first. If the remaining message matches any allowed search type, use the remaining message for search and briefly mention that we deals only in bracelets, not that product type.\n\nBefore every product card, write a combined very short helpful description explaining why the product is relevant to the user's need with product’s Title in bold.\n\nOnly suggest products when the user input is related to one of these search types:\n\n1. By Stone\n2. By Number / Moolank / Ruling Number\n3. By Problem\n4. By Zodiac / Rashi\n\nFor number-based searches, Moolank / Ruling Number must be between 1 and 9 only.\n\nSearch must be based only on these available store fields:\n\n* Title\n* Product Sub Title\n* Problems\n* Zodiac Sign\n* Price\n* Available\n* URL\n\nFor By Stone search, match the user input with the Title field.\n\nFor By Number / Moolank / Ruling Number search, match the user input with the Title and Product Sub Title fields.\n\nFor By Problem search, match the user input with the Problems field first, then Title. Show a product only if the requested problem/intention clearly appears in that product’s own Problems field or Title.\n\nFor By Zodiac / Rashi search, match the user input with the Zodiac Sign field.\n\nIf the user says only a problem or intention word, treat it as a By Problem search. Do not require the user to write the word “problem”.\n\nIf the user says only “number 4”, “moolank 4”, “ruling number 4”, or similar number-based text, treat it as a By Number search and check Product Sub Title also.\n\nFor number-based searches, validate each product before showing it.\n\nShow a product only if the exact requested number appears in that product’s Title or Product Sub Title.\n\nIgnore Price, Available, URL, Problems, and Zodiac Sign when validating number-based searches.\n\nIf the user says only generic category words like “stone”, “bracelet”, “product”, “problem”, “zodiac”, “rashi”, “moolank”, or “number”, do not show products. Ask the user to provide a specific stone name, problem/intention, zodiac/rashi, or moolank number from 1 to 9.\n\nProduct suggestions must directly match the user’s exact search intent.\n\nDo not suggest products from unrelated fields.\n\nDo not say no matching product is available unless Query Data Tool returns no matching products from the allowed fields.\n\n# MANDATORY PRODUCT CARD FORMAT\n\nWhen showing a product, always output the product card exactly like this:\n\nPRODUCT_CARD_START\nName: [EXACT product title from store result]\nPrice: [EXACT product price from store result]\nStock: [EXACT stock status from store result]\nURL: [EXACT raw product URL from store result]\nImage URL: [EXACT raw image URL from store result]\nPRODUCT_CARD_END\n\nDo not add bullets inside the product card.\n\nDo not add markdown inside the product card.\n\nDo not bold any product card field.\n\nDo not convert the URL into a markdown link.\n\nDo not convert the Image URL into a markdown link.\n\nDo not change field names.\n\nDo not add extra fields.\n\nDetect reply language only from the latest Human message, not from Query Data Tool tool results.\n\nReply in the same language as the latest Human message.\n\nIf the latest Human message is Hinglish, reply in Hinglish.\n\nIf the latest Human message is Hindi, reply in Hindi.\n\nIf the latest Human message is English, reply in English.\n\nTool results may be in English, but do not copy the tool result language for normal reply text."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        48
+      ],
+      "id": "a7f6c1cb-08e5-449d-be8d-25d30f0103a3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        944,
+        256
+      ],
+      "id": "ef710d80-f2fb-4b0c-b726-8acb47f3c815",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ud7LNQFJncui5L7S",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 492,
+        "width": 712,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "5624cc31-3eee-41ee-ad2f-6944f23c0782",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "ce532a94-dc37-4e74-8cd7-b93c43593dc2",
+      "name": "Chat Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        864,
+        48
+      ],
+      "webhookId": "e00f0515-10d9-4752-8b85-1902185af5bd"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"output\": {{ JSON.stringify($('AI Agent').item.json.output || \"Sorry, I could not generate a response.\") }}\n}",
+        "options": {}
+      },
+      "id": "39e2f20b-0e46-472f-bbeb-08f046be379c",
+      "name": "Respond to Chat1",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1456,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "reload-data",
+        "options": {}
+      },
+      "id": "54e213ec-1d66-4d06-b195-6315136a7e3b",
+      "name": "Reload Data Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        32,
+        32
+      ],
+      "webhookId": "reload-data-webhook-001"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://your-app.gadget.app/api/graphql",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ `mutation {\n  fetchShopifyData(\n    limit: ${$json.limit || 250},\n    fetchAll: ${$json.fetchAll ? true : false},\n    cursor: ${$json.cursor ? `\"${$json.cursor}\"` : null}\n  ) {\n    success\n    result\n    errors {\n      message\n      code\n    }\n  }\n}` }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        224,
+        32
+      ],
+      "id": "854ebc9f-173f-407b-b436-77f0eb0d0826",
+      "name": "Fetch Shopify Data From Gadget"
+    },
+    {
+      "parameters": {
+        "jsCode": "function parsePdpBadge(value) {\n  if (!value) return '';\n\n  try {\n    const parsed = JSON.parse(value);\n\n    if (Array.isArray(parsed)) {\n      return parsed\n        .map(item => String(item).trim())\n        .filter(Boolean)\n        .join(', ');\n    }\n\n    return String(parsed).trim();\n  } catch (e) {\n    return String(value)\n      .replace(/^\\[/, '')\n      .replace(/\\]$/, '')\n      .replace(/\"/g, '')\n      .replace(/\\s*,\\s*/g, ', ')\n      .trim();\n  }\n}\n\nfunction cleanText(value) {\n  return String(value || '')\n    .replace(/<[^>]*>/g, ' ')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&quot;/g, '\"')\n    .replace(/&#39;/g, \"'\")\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\nfunction extractZodiacSigns(title, description) {\n  const zodiacSigns = [\n    'Aries',\n    'Taurus',\n    'Gemini',\n    'Cancer',\n    'Leo',\n    'Virgo',\n    'Libra',\n    'Scorpio',\n    'Sagittarius',\n    'Capricorn',\n    'Aquarius',\n    'Pisces',\n  ];\n\n  const combinedText = `${cleanText(title)} ${cleanText(description)}`;\n\n  if (!combinedText.trim()) return '';\n\n  if (/Zodiac Signs\\s+Ideal\\s+for\\s+All/i.test(combinedText)) {\n    return 'Ideal for All';\n  }\n  if(/Zodiac Signs\\s+All\\s+zodiac\\s+signs/i.test(combinedText)) {\n    return 'All zodiac signs';\n  }\n\n  const found = [];\n\n  for (const sign of zodiacSigns) {\n    const regex = new RegExp(`\\\\b${sign}\\\\b`, 'i');\n\n    if (regex.test(combinedText)) {\n      found.push(sign);\n    }\n  }\n\n  return [...new Set(found)].join(', ');\n}\n\nfunction getResultFromInput(item) {\n  let result = item.json?.data?.fetchShopifyData?.result;\n\n  if (typeof result === 'string') {\n    try {\n      result = JSON.parse(result);\n    } catch (e) {\n      return null;\n    }\n  }\n\n  return result;\n}\n\nconst output = [];\n\nfor (const item of $input.all()) {\n  const result = getResultFromInput(item);\n\n  if (!result?.success || !Array.isArray(result.data)) continue;\n\n  for (const product of result.data) {\n    const title = String(product.title || '').trim();\n\n    if (!title) continue;\n\n    const productSubTitle = String(product.productSubTitle || '').trim();\n    const problems = parsePdpBadge(product.pdpBadge || '');\n    const zodiacSign = extractZodiacSigns(title, product.description || '');\n    const price = String(product.price || '').trim();\n    const available = String(product.available || '').trim();\n    const url = String(product.url || '').trim();\n    const imageUrl = String(product.image_url || '').trim();\n\n    output.push({\n  json: {\n    title: title,\n    productSubTitle: productSubTitle || 'N/A',\n    problems: problems || 'N/A',\n    zodiacSign: zodiacSign || 'N/A',\n    price: price || 'N/A',\n    available: available || 'N/A',\n    url: url || 'N/A',\n    image_url: imageUrl || 'N/A',\n  },\n});\n  }\n}\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        32
+      ],
+      "id": "21b84aa0-1dc1-4721-9010-959c9b13f1e4",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"success\":true}",
+        "options": {}
+      },
+      "id": "b7edbb2f-de14-4cf3-9313-931cd703f726",
+      "name": "Respond to Lead Capture",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        976,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "capture-lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "f1f72cc9-2277-4e3d-8226-4669cd22df21",
+      "name": "Capture Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        576,
+        768
+      ],
+      "webhookId": "capture-lead-001"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://your-app.gadget.app/api/graphql",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "=mutation {\n  saveChatConversation(\n    shopDomain: \"example-store.myshopify.com\"\n    sessionId: {{ JSON.stringify($('Chat Webhook').item.json.body.sessionId || 'no-session') }}\n    customerName: \"\"\n    customerEmail: \"\"\n    customerPhone: \"\"\n    userMessage: {{ JSON.stringify($('Chat Webhook').item.json.body.message || '') }}\n    assistantMessage: {{ JSON.stringify(\n      (() => {\n        const output = $('AI Agent').item.json.output || '';\n\n        const urls = [...output.matchAll(/URL:\\s*(https?:\\/\\/[^\\s]+)/g)]\n          .map(match => match[1])\n          .join('\\n');\n\n        const messageOnly = output\n          .replace(/PRODUCT_CARD_START[\\s\\S]*?PRODUCT_CARD_END/g, '')\n          .trim();\n\n        if (urls && messageOnly) {\n          return messageOnly + '\\n\\n' + urls;\n        }\n\n        if (urls) {\n          return urls;\n        }\n\n        return output;\n      })()\n    ) }}\n  ) {\n    success\n  }\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1280,
+        48
+      ],
+      "id": "f28f0c6e-5902-4a8b-b41e-40c634aac487",
+      "name": "Save Chat to Gadget"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://your-app.gadget.app/api/graphql",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "=mutation {\n  saveChatConversation(\n    shopDomain: \"example-store.myshopify.com\"\n    sessionId: {{ JSON.stringify($('Capture Lead Webhook').item.json.body.sessionId || 'no-session') }}\n    customerName: {{ JSON.stringify($('Capture Lead Webhook').item.json.body.name || '') }}\n    customerEmail: {{ JSON.stringify($('Capture Lead Webhook').item.json.body.email || '') }}\n    customerPhone: {{ JSON.stringify($('Capture Lead Webhook').item.json.body.phone || '') }}\n    userMessage: \"\"\n    assistantMessage: \"\"\n  ) {\n    success\n  }\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        784,
+        768
+      ],
+      "id": "3345ddf2-c78a-409e-be59-d56af18f4c13",
+      "name": "Save Chat to Gadget1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = [];\n\nfunction isEmptyValue(value) {\n  const text = String(value || '').trim();\n\n  return (\n    text === '' ||\n    text.toUpperCase() === 'N/A' ||\n    text.toLowerCase() === 'null' ||\n    text.toLowerCase() === 'undefined'\n  );\n}\n\nfunction isNotAvailable(value) {\n  const text = String(value || '').trim().toLowerCase();\n\n  return (\n    text === 'no' ||\n    text === 'false' ||\n    text === 'not available' ||\n    text === 'out of stock' ||\n    text === 'outofstock'\n  );\n}\n\nfor (const item of $input.all()) {\n  const product = item.json;\n\n  const title = String(product.title || '').trim();\n  const productSubTitle = String(product.productSubTitle || '').trim();\n  const problems = String(product.problems || '').trim();\n  const zodiacSign = String(product.zodiacSign || '').trim();\n  const price = String(product.price || '').trim();\n  const available = String(product.available || '').trim();\n  const url = String(product.url || '').trim();\n  const imageUrl = String(product.image_url || '').trim();\n  const noProductSubTitle = isEmptyValue(productSubTitle);\n  const noProblems = isEmptyValue(problems);\n  const noZodiacSign = isEmptyValue(zodiacSign);\n  const productNotAvailable = isNotAvailable(available);\n\n  const shouldRemove =\n    noProductSubTitle &&\n    noProblems &&\n    noZodiacSign &&\n    productNotAvailable;\n\n  if (shouldRemove) {\n    continue;\n  }\n\n  const text =\n    `PRODUCT\\n` +\n    `Title: ${title || 'N/A'}\\n` +\n    `Product Sub Title: ${productSubTitle || 'N/A'}\\n` +\n    `Problems: ${problems || 'N/A'}\\n` +\n    `Zodiac Sign: ${zodiacSign || 'N/A'}\\n` +\n    `Price: ${price || 'N/A'}\\n` +\n    `Available: ${available || 'N/A'}\\n` +\n    `URL: ${url || 'N/A'}\\n` +\n    `Image URL: ${imageUrl || 'N/A'}`;\n\n  output.push({\n    json: {\n      text,\n    },\n  });\n}\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        32
+      ],
+      "id": "d29cbed6-f7fb-4b94-81bd-de9c3306429b",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Chat Webhook').item.json.body.sessionId }}",
+        "contextWindowLength": 100
+      },
+      "id": "346bd7c9-87ce-47de-be91-0fae24e486c9",
+      "name": "Conversation Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        240
+      ],
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Insert Data to Store",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Query Data Tool",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Insert Data to Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Data Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Save Chat to Gadget",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reload Data Webhook": {
+      "main": [
+        [
+          {
+            "node": "Fetch Shopify Data From Gadget",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Shopify Data From Gadget": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Lead Webhook": {
+      "main": [
+        [
+          {
+            "node": "Save Chat to Gadget1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Chat to Gadget": {
+      "main": [
+        [
+          {
+            "node": "Respond to Chat1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Chat to Gadget1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Lead Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Insert Data to Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c99a74cb-9160-460c-8190-87d22a263554",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "your n8n instaceID"
+  },
+  "id": "kDomP3C9CnG4sjRp",
+  "tags": []
+}

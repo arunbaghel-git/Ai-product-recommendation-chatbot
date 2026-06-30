@@ -1,0 +1,30 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# n8n data directory
+n8n_data/
+
+# Logs
+*.log
+logs/
+
+# Node modules (if you add any JS tooling later)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Temporary files
+*.tmp
+*.temp
